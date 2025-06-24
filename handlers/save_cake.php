@@ -15,10 +15,12 @@ $data = json_decode(file_get_contents('php://input'), true);
 
 $cakeDesign = $data['design'] ?? null;
 $layers = $data['layerCount'] ?? null;
+$layers_type = $data['layers_type'] ?? null;
 $toppings = $data['toppings'] ?? [];
+$artistId = $data['artistId'] ?? null;
 
 // Basic validation
-if (!$cakeDesign || !$layers) {
+if (!$cakeDesign || !$layers || !$artistId) {
     echo json_encode(['success' => false, 'message' => 'Incomplete cake details provided.']);
     exit();
 }
@@ -26,14 +28,15 @@ if (!$cakeDesign || !$layers) {
 // Convert toppings array to a comma-separated string
 $toppingsString = implode(', ', $toppings);
 
-// Hardcode artist_id for now. We can change this later.
-$artistId = 1;
+if ($layers == 1) {
+    $layers_type = null;
+}
 
 // Prepare and execute the INSERT statement
 try {
-    $sql = "INSERT INTO cake (artist_id, cake_design, layers, toppings) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO cake (artist_id, cake_design, layers, toppings, layers_type) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isis", $artistId, $cakeDesign, $layers, $toppingsString);
+    $stmt->bind_param("isiss", $artistId, $cakeDesign, $layers, $toppingsString, $layers_type);
     
     if ($stmt->execute()) {
         $newCakeId = $conn->insert_id;

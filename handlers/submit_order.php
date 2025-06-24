@@ -28,24 +28,32 @@ $deliveryType = $deliveryDetails['deliveryType'] ?? 'lunar';
 $paymentMethod = $deliveryDetails['paymentMethod'] ?? 'credits';
 $feedback = $deliveryDetails['feedback'] ?? '';
 $promoCode = $deliveryDetails['promoCode'] ?? '';
-$promotionId = null;
+$promotionIds = null;
 
 // --- Handle Promotion Code ---
 if (!empty($promoCode)) {
-    // In a real app, you might handle multiple comma-separated codes.
-    // For now, we'll just use the first one.
     $promoCodes = explode(',', $promoCode);
-    $firstPromoCode = $promoCodes[0];
+    $foundPromotionIds = [];
 
+    // Prepare a statement to be reused
     $sql_promo = "SELECT promotion_id FROM promotion WHERE promotion_name = ? LIMIT 1";
     $stmt_promo = $conn->prepare($sql_promo);
-    $stmt_promo->bind_param("s", $firstPromoCode);
-    $stmt_promo->execute();
-    $result_promo = $stmt_promo->get_result();
-    if ($row = $result_promo->fetch_assoc()) {
-        $promotionId = $row['promotion_id'];
+
+    if ($stmt_promo) {
+        foreach ($promoCodes as $code) {
+            $stmt_promo->bind_param("s", $code);
+            $stmt_promo->execute();
+            $result_promo = $stmt_promo->get_result();
+            if ($row = $result_promo->fetch_assoc()) {
+                $foundPromotionIds[] = $row['promotion_id'];
+            }
+        }
+        $stmt_promo->close();
     }
-    $stmt_promo->close();
+
+    if (!empty($foundPromotionIds)) {
+        $promotionIds = implode(',', $foundPromotionIds);
+    }
 }
 
 
@@ -64,10 +72,10 @@ try {
         $cakeId = $item['cakeId'];
         
         $stmt->bind_param(
-            "iiissss",
+            "iisssss",
             $customerId,
             $cakeId,
-            $promotionId,
+            $promotionIds,
             $deliveryDate,
             $deliveryType,
             $paymentMethod,

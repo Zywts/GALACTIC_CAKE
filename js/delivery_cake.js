@@ -14,6 +14,26 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // Fetch Artists
+    function fetchArtists() {
+        fetch('../handlers/get_artists.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const artistSelect = document.getElementById('artistSelection');
+                    data.artists.forEach(artist => {
+                        const option = document.createElement('option');
+                        option.value = artist.artist_id;
+                        option.textContent = artist.artist_name;
+                        artistSelect.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching artists:', error);
+            });
+    }
+
  // Create animated stars
         function createStars() {
             const starsContainer = document.getElementById('stars');

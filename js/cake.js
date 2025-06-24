@@ -5,6 +5,7 @@
             layerCount: null,
             layers: [],
             toppings: [],
+            artistId: null,
             currentLayerEditing: 1 // Track which layer we're currently editing
         };
 
@@ -60,6 +61,26 @@
             updatePreview();
             setupLogoutButton();
             setupCartButton();
+            fetchArtists();
+        }
+
+        function fetchArtists() {
+            fetch('../handlers/get_artists.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const artistSelect = document.getElementById('artistSelection');
+                        data.artists.forEach(artist => {
+                            const option = document.createElement('option');
+                            option.value = artist.artist_id;
+                            option.textContent = artist.artist_name;
+                            artistSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching artists:', error);
+                });
         }
 
         function setupLogoutButton() {
@@ -173,6 +194,11 @@
                     
                     updatePreview();
                 });
+            });
+
+            document.getElementById('artistSelection').addEventListener('change', (e) => {
+                cakeOptions.artistId = e.target.value;
+                updatePreview();
             });
 
             // Add to cart button
@@ -355,7 +381,8 @@
             return cakeOptions.design && 
                    cakeOptions.flavor && 
                    cakeOptions.layerCount && 
-                   cakeOptions.layers.length === cakeOptions.layerCount;
+                   cakeOptions.layers.length === cakeOptions.layerCount &&
+                   cakeOptions.artistId;
         }
 
         // Show notification
@@ -381,7 +408,8 @@
                 design: cakeOptions.design,
                 layerCount: cakeOptions.layerCount,
                 toppings: cakeOptions.toppings,
-                layers: cakeOptions.layers // Sending full composition for context
+                layers_type: cakeOptions.layers.join(', '), // Sending full composition for context
+                artistId: cakeOptions.artistId
             };
         
             // Use fetch to send data to the new PHP script
@@ -448,6 +476,7 @@
             cakeOptions.layerCount = null;
             cakeOptions.layers = [];
             cakeOptions.toppings = [];
+            cakeOptions.artistId = null;
             cakeOptions.currentLayerEditing = 1;
             
             document.querySelectorAll('.option-btn').forEach(btn => {

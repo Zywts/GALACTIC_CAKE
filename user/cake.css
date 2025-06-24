@@ -208,6 +208,28 @@
             cursor: not-allowed;
         }
 
+        .form-select {
+            background: rgba(245, 167, 204, 0.3);
+            border: 1px solid rgba(245, 167, 204, 0.5);
+            border-radius: 8px;
+            color: white;
+            padding: 10px 15px;
+            font-family: 'Kode Mono', monospace;
+            width: 100%;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+        }
+
+        .form-select:hover {
+            background: rgba(245, 167, 204, 0.5);
+        }
+
         .preview-title {
             font-size: 1.5rem;
             margin-bottom: 20px;
