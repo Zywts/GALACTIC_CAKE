@@ -31,7 +31,7 @@
 #### SELECT artist_id, artist_name FROM artist ORDER BY artist_name ASC
 - ##### Purpose: This command retrieves a list of all available artists.
 - ##### How it works: This query fetches the ID and name of every artist from the artist table and sorts them in alphabetical order. This list is then displayed to the user, allowing them to choose their preferred artist for their cake design.
-- -- --
+-- --
 # From handlers/delivery_cake.php
 #### INSERT INTO deliveries (username, address, phone) VALUES (?, ?, ?)
 - ##### Purpose: This command saves the delivery details for an order.
@@ -41,7 +41,7 @@
 #### SELECT promotion_id FROM promotion WHERE promotion_name = ? LIMIT 1
 - ##### Purpose: This command validates a promotional code entered by the user.
 - ##### How it works: If a user enters a promo code, this query checks the promotion table to see if it's a valid code. LIMIT 1 ensures that only one result is returned, even if there are duplicate promotion names. If the code is valid, the corresponding promotion_id is applied to the order.
-- 
+  
 #### INSERT INTO orders (customer_id, cake_id, promotion_id, delivery_date, delivery_type, payment, feedback) VALUES (?, ?, ?, ?, ?, ?, ?)
 - ##### Purpose: This command finalizes and records an order in the database.
 - ##### How it works: This is the final step in the ordering process. The query inserts all the essential order details—such as the customer's ID, the cake's ID, any promotions, delivery information, and payment method—into the orders table. This creates a complete and permanent record of the transaction.
